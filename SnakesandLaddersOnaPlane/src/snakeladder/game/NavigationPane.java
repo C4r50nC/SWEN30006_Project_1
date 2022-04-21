@@ -83,7 +83,6 @@ public class NavigationPane extends GameGrid
   private GamePlayCallback gamePlayCallback;
 
   private int numberOfDice;
-  private int currentDice = 0;
 
   NavigationPane(Properties properties)
   {
@@ -287,12 +286,8 @@ public class NavigationPane extends GameGrid
       showStatus("Done. Click the hand!");
       String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       showResult(result);
-
-      // Switch puppet after all rolling chances are used
-      currentDice += 1;
-      if (currentDice == numberOfDice) {
+      if (nbRolls % numberOfDice == 0) {
         gp.switchToNextPuppet();
-        currentDice = 0; // Reset after switching
       }
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
@@ -306,10 +301,12 @@ public class NavigationPane extends GameGrid
     }
   }
 
-  void startMoving(int nb)
+  void startMoving(int nb, int pips)
   {
-    showStatus("Moving...");
-    showPips("Pips: " + nb);
+    if (nb != 0) {
+      showStatus("Moving...");
+    }
+    showPips("Pips: " + pips);
     showScore("# Rolls: " + (++nbRolls));
     gp.getPuppet().go(nb);
   }
@@ -354,5 +351,13 @@ public class NavigationPane extends GameGrid
 
   public void checkAuto() {
     if (isAuto) Monitor.wakeUp();
+  }
+
+  int getNumberOfDice() {
+    return numberOfDice;
+  }
+
+  int getNbRolls() {
+    return nbRolls;
   }
 }

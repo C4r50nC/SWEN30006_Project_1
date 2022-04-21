@@ -40,6 +40,10 @@ public class Puppet extends Actor
 
   void go(int nbSteps)
   {
+    if (nbSteps == 0) {
+      navigationPane.prepareRoll(cellIndex);
+      return;
+    }
     if (cellIndex == 100)  // after game over
     {
       cellIndex = 0;
@@ -115,6 +119,11 @@ public class Puppet extends Actor
       return;
     }
 
+    boolean lowestRoll = false;
+    if (nbSteps == navigationPane.getNumberOfDice()) {
+      lowestRoll = true;
+    }
+
     // Normal movement
     if (nbSteps > 0)
     {
@@ -139,7 +148,7 @@ public class Puppet extends Actor
             dy = gamePane.animationStep;
           else
             dy = -gamePane.animationStep;
-          if (currentCon instanceof Snake)
+          if (currentCon instanceof Snake && !lowestRoll)
           {
             navigationPane.showStatus("Digesting...");
             navigationPane.playSound(GGSound.MMM);

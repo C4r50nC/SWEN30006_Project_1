@@ -6,6 +6,7 @@ public class Die extends Actor
 {
   private NavigationPane np;
   private int nb;
+  private static int totalNb = 0;
 
   Die(int nb, NavigationPane np)
   {
@@ -20,7 +21,13 @@ public class Die extends Actor
     if (getIdVisible() == 6)
     {
       setActEnabled(false);
-      np.startMoving(nb);
+      totalNb += nb;
+      if ((np.getNbRolls() + 1) % np.getNumberOfDice() == 0) {
+        np.startMoving(totalNb, nb);
+        totalNb = 0;
+      } else {
+        np.startMoving(0, nb);
+      }
     }
   }
 
