@@ -105,7 +105,8 @@ public class Puppet extends Actor
     // Animation: Move on connection
     if (currentCon != null)
     {
-      if (isLowestStep) {
+      // Avoid traveling down after getting the lowest step
+      if (isLowestStep && currentCon.cellEnd < currentCon.cellStart) {
         currentCon = null;
         navigationPane.prepareRoll(cellIndex);
         return;
@@ -154,10 +155,12 @@ public class Puppet extends Actor
             dy = gamePane.animationStep;
           else
             dy = -gamePane.animationStep;
-          if (currentCon instanceof Snake && !isLowestStep)
+          if (currentCon instanceof Snake)
           {
-            navigationPane.showStatus("Digesting...");
-            navigationPane.playSound(GGSound.MMM);
+            if (!isLowestStep) {
+              navigationPane.showStatus("Digesting...");
+              navigationPane.playSound(GGSound.MMM);
+            }
           }
           else
           {
