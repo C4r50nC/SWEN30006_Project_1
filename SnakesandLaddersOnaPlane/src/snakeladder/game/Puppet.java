@@ -14,6 +14,7 @@ public class Puppet extends Actor
   private int dy;
   private boolean isAuto;
   private String puppetName;
+  private boolean isLowestStep;
 
   Puppet(GamePane gp, NavigationPane np, String puppetImage)
   {
@@ -40,6 +41,10 @@ public class Puppet extends Actor
 
   void go(int nbSteps)
   {
+    isLowestStep = false;
+    if (nbSteps == navigationPane.getNumberOfDice()) {
+      isLowestStep = true;
+    }
     if (nbSteps == 0) {
       navigationPane.prepareRoll(cellIndex);
       return;
@@ -100,6 +105,12 @@ public class Puppet extends Actor
     // Animation: Move on connection
     if (currentCon != null)
     {
+      if (isLowestStep) {
+        currentCon = null;
+        navigationPane.prepareRoll(cellIndex);
+        return;
+      }
+
       int x = gamePane.x(y, currentCon);
       setPixelLocation(new Point(x, y));
       y += dy;
@@ -117,11 +128,6 @@ public class Puppet extends Actor
         navigationPane.prepareRoll(cellIndex);
       }
       return;
-    }
-
-    boolean lowestRoll = false;
-    if (nbSteps == navigationPane.getNumberOfDice()) {
-      lowestRoll = true;
     }
 
     // Normal movement
@@ -148,7 +154,7 @@ public class Puppet extends Actor
             dy = gamePane.animationStep;
           else
             dy = -gamePane.animationStep;
-          if (currentCon instanceof Snake && !lowestRoll)
+          if (currentCon instanceof Snake && !isLowestStep)
           {
             navigationPane.showStatus("Digesting...");
             navigationPane.playSound(GGSound.MMM);
