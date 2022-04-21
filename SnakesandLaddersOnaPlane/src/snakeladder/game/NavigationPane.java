@@ -292,9 +292,9 @@ public class NavigationPane extends GameGrid
       currentDice += 1;
       if (currentDice == numberOfDice) {
         gp.switchToNextPuppet();
-        currentDice = 0;
+        currentDice = 0; // Reset after switching
       }
-      System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
+      // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
       if (isAuto) {
         Monitor.wakeUp();
