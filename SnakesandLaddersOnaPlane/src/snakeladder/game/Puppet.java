@@ -89,6 +89,29 @@ public class Puppet extends Actor
     cellIndex++;
   }
 
+  private void moveToPrevCell()
+  {
+    cellIndex--;
+    int tens = cellIndex / 10;
+    int ones = cellIndex - tens * 10;
+    if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
+    {
+      if (ones == 1) {
+        setLocation(new Location(getX(), getY() + 1));
+      } else {
+        setLocation(new Location(getX() - 1, getY()));
+      }
+    }
+    else     // Cells starting left 20, 40, .. 100
+    {
+      if (ones == 1) {
+        setLocation(new Location(getX(), getY() + 1));
+      } else {
+        setLocation(new Location(getX() + 1, getY()));
+      }
+    }
+  }
+
   public void act()
   {
     if ((cellIndex / 10) % 2 == 0)
@@ -170,6 +193,15 @@ public class Puppet extends Actor
         }
         else
         {
+          // Detect collision
+          for (Puppet puppet: gamePane.getAllPuppets()) {
+            if (puppet != this && puppet.getCellIndex() == cellIndex) {
+              puppet.moveToPrevCell();
+              // Check connections
+
+            }
+          }
+
           setActEnabled(false);
           navigationPane.prepareRoll(cellIndex);
         }
