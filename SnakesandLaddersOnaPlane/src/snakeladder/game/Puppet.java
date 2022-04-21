@@ -96,7 +96,7 @@ public class Puppet extends Actor
     int ones = cellIndex - tens * 10;
     if (tens % 2 == 0)     // Cells starting left 01, 21, .. 81
     {
-      if (ones == 1) {
+      if (ones == 0) {
         setLocation(new Location(getX(), getY() + 1));
       } else {
         setLocation(new Location(getX() - 1, getY()));
@@ -104,12 +104,35 @@ public class Puppet extends Actor
     }
     else     // Cells starting left 20, 40, .. 100
     {
-      if (ones == 1) {
+      if (ones == 0) {
         setLocation(new Location(getX(), getY() + 1));
       } else {
         setLocation(new Location(getX() + 1, getY()));
       }
     }
+
+    // Check Connections
+    if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
+    {
+      gamePane.setSimulationPeriod(50);
+      y = gamePane.toPoint(currentCon.locStart).y;
+      if (currentCon.locEnd.y > currentCon.locStart.y)
+        dy = gamePane.animationStep;
+      else
+        dy = -gamePane.animationStep;
+      if (currentCon instanceof Snake)
+      {
+        navigationPane.showStatus("Digesting...");
+        navigationPane.playSound(GGSound.MMM);
+      }
+      else
+      {
+        navigationPane.showStatus("Climbing...");
+        navigationPane.playSound(GGSound.BOING);
+      }
+    }
+    setActEnabled(true);
+    gamePane.switchToPrevPuppet();
   }
 
   public void act()
@@ -197,8 +220,6 @@ public class Puppet extends Actor
           for (Puppet puppet: gamePane.getAllPuppets()) {
             if (puppet != this && puppet.getCellIndex() == cellIndex) {
               puppet.moveToPrevCell();
-              // Check connections
-
             }
           }
 
