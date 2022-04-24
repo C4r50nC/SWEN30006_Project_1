@@ -210,8 +210,12 @@ public class NavigationPane extends GameGrid
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
         isToggle = checked;
+        if (isToggle) {
+          gp.swapSnakeLadder();
+        }
       }
     });
+    toggleCheck.setEnabled(false);
 
     addDieButtons();
 
@@ -265,6 +269,9 @@ public class NavigationPane extends GameGrid
 
   void prepareRoll(int currentIndex)
   {
+    if (nbRolls == 0) {
+      toggleCheck.setEnabled(false);
+    }
     if (currentIndex == 100)  // Game over
     {
       playSound(GGSound.FADE);
@@ -288,6 +295,7 @@ public class NavigationPane extends GameGrid
       showResult(result);
       if (nbRolls % numberOfDice == 0) {
         gp.switchToNextPuppet();
+        toggleCheck.setEnabled(true);
       }
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
@@ -329,6 +337,7 @@ public class NavigationPane extends GameGrid
 
   private void roll(int rollNumber)
   {
+    toggleCheck.setEnabled(false);
     int nb = rollNumber;
     if (rollNumber == RANDOM_ROLL_TAG) {
       nb = ServicesRandom.get().nextInt(6) + 1;

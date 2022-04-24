@@ -137,4 +137,10 @@ public class GamePane extends GameGrid
     return (int)(a * y + b);
   }
 
+  void swapSnakeLadder() {
+    for (Connection connection: connections) {
+      connection.switchDirection();
+    }
+  }
+
 }
