@@ -132,7 +132,7 @@ public class Puppet extends Actor
       }
     }
     setActEnabled(true);
-    gamePane.switchToPrevPuppet();
+    // gamePane.switchToPrevPuppet();
   }
 
   public void act()
@@ -192,6 +192,13 @@ public class Puppet extends Actor
       nbSteps--;
       if (nbSteps == 0)
       {
+        // Detect collision
+        for (Puppet puppet: gamePane.getAllPuppets()) {
+          if (puppet != this && puppet.getCellIndex() == cellIndex) {
+            puppet.moveToPrevCell();
+          }
+        }
+
         // Check if on connection start
         if ((currentCon = gamePane.getConnectionAt(getLocation())) != null)
         {
@@ -216,13 +223,6 @@ public class Puppet extends Actor
         }
         else
         {
-          // Detect collision
-          for (Puppet puppet: gamePane.getAllPuppets()) {
-            if (puppet != this && puppet.getCellIndex() == cellIndex) {
-              puppet.moveToPrevCell();
-            }
-          }
-
           setActEnabled(false);
           navigationPane.prepareRoll(cellIndex);
         }
