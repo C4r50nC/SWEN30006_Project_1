@@ -299,9 +299,9 @@ public class NavigationPane extends GameGrid
       }
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
-      if (isAuto) {
+      if (isAuto && !toggleCheck.isEnabled()) {
         Monitor.wakeUp();
-      } else if (gp.getPuppet().isAuto()) {
+      } else if (gp.getPuppet().isAuto() && !toggleCheck.isEnabled()) {
         Monitor.wakeUp();
       } else {
         handBtn.setEnabled(true);
