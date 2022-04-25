@@ -209,9 +209,9 @@ public class NavigationPane extends GameGrid
     toggleCheck.addCheckButtonListener(new GGCheckButtonListener() {
       @Override
       public void buttonChecked(GGCheckButton ggCheckButton, boolean checked) {
-        isToggle = checked;
-        if (isToggle) {
+        if (isToggle != checked) {
           gp.swapSnakeLadder();
+          isToggle = checked;
         }
       }
     });
@@ -295,8 +295,8 @@ public class NavigationPane extends GameGrid
       showResult(result);
       boolean switched = (nbRolls % numberOfDice == 0);
       if (switched) {
-        gp.reportRolls(gp.getCurrentPuppetIndex());
-        gp.reportTraverses(gp.getCurrentPuppetIndex());
+        // gp.reportRolls(gp.getCurrentPuppetIndex());
+        // gp.reportTraverses(gp.getCurrentPuppetIndex());
         gp.switchToNextPuppet();
         if (!gp.getNextPuppet().isAuto()) {
           toggleCheck.setEnabled(true);
@@ -321,7 +321,7 @@ public class NavigationPane extends GameGrid
   }
 
   void autoSwap() {
-    Puppet otherPuppet = gp.getNextPuppet();
+    Puppet otherPuppet = gp.getPuppet();
     int minCellIndex = numberOfDice + otherPuppet.getCellIndex();
     int maxCellIndex = 6 * numberOfDice + otherPuppet.getCellIndex();
     int up = 0;
@@ -345,15 +345,18 @@ public class NavigationPane extends GameGrid
       }
     }
 
+    // System.out.println("Detected Up: " + up);
+    // System.out.println("Detected Down: " + down);
+
     if (up >= down) {
       if (toggleCheck.isChecked()) {
         toggleCheck.setChecked(false);
+        gp.swapSnakeLadder();
       } else {
         toggleCheck.setChecked(true);
+        gp.swapSnakeLadder();
       }
     }
-    System.out.println("Up: " + up);
-    System.out.println("Down: " + down);
   }
 
   void startMoving(int nb, int pips)
