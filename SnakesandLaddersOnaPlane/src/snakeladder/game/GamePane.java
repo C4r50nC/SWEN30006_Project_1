@@ -147,4 +147,22 @@ public class GamePane extends GameGrid
     }
   }
 
+  void reportRolls(int puppetIndex) {
+    System.out.print("Player " + puppetIndex + " rolled: ");
+    for (int key: puppets.get(puppetIndex).getRecord().keySet()) {
+      System.out.print(key + "-" + puppets.get(puppetIndex).getRecord().get(key));
+      if (key != np.getNumberOfDice() * 6) {
+        System.out.print(", ");
+      }
+    }
+    System.out.println();
+  }
+
+  void reportTraverses(int puppetIndex) {
+    System.out.println("Player " + puppetIndex + " traversed: up-" + puppets.get(puppetIndex).getUp() + ", down-" + puppets.get(puppetIndex).getDown());
+  }
+
+  int getCurrentPuppetIndex() {
+    return currentPuppetIndex;
+  }
 }

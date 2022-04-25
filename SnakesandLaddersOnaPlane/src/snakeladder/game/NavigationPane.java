@@ -295,6 +295,8 @@ public class NavigationPane extends GameGrid
       showResult(result);
       boolean switched = (nbRolls % numberOfDice == 0);
       if (switched) {
+        gp.reportRolls(gp.getCurrentPuppetIndex());
+        gp.reportTraverses(gp.getCurrentPuppetIndex());
         gp.switchToNextPuppet();
         if (!gp.getNextPuppet().isAuto()) {
           toggleCheck.setEnabled(true);
@@ -324,7 +326,7 @@ public class NavigationPane extends GameGrid
     int maxCellIndex = 6 * numberOfDice + otherPuppet.getCellIndex();
     int up = 0;
     int down = 0;
-    for (int i = minCellIndex; i < maxCellIndex; i++) {
+    for (int i = minCellIndex; i <= maxCellIndex; i++) {
       Connection currentCon = gp.getConnectionAt(gp.cellToLocation(i));
       if (currentCon != null) {
         if (!toggleCheck.isChecked()) {
@@ -358,6 +360,8 @@ public class NavigationPane extends GameGrid
   {
     if (nb != 0) {
       showStatus("Moving...");
+      int oldValue = gp.getPuppet().getRecord().get(nb);
+      gp.getPuppet().getRecord().replace(nb, oldValue + 1);
     }
     showPips("Pips: " + pips);
     showScore("# Rolls: " + (++nbRolls));
@@ -413,5 +417,9 @@ public class NavigationPane extends GameGrid
 
   int getNbRolls() {
     return nbRolls;
+  }
+
+  GGCheckButton getToggleCheck() {
+    return toggleCheck;
   }
 }

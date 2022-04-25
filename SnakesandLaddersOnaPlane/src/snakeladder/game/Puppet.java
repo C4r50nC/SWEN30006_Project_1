@@ -2,6 +2,7 @@ package snakeladder.game;
 
 import ch.aplu.jgamegrid.*;
 import java.awt.Point;
+import java.util.HashMap;
 
 public class Puppet extends Actor
 {
@@ -16,11 +17,32 @@ public class Puppet extends Actor
   private String puppetName;
   private boolean isLowestStep;
 
+  private int up;
+  private int down;
+
+  private HashMap<Integer, Integer> record = new HashMap<>();
+
   Puppet(GamePane gp, NavigationPane np, String puppetImage)
   {
     super(puppetImage);
     this.gamePane = gp;
     this.navigationPane = np;
+
+    for (int i = np.getNumberOfDice(); i <= 6 * np.getNumberOfDice(); i++) {
+      record.put(i, 0);
+    }
+  }
+
+  public HashMap<Integer, Integer> getRecord() {
+    return record;
+  }
+
+  public int getUp() {
+    return up;
+  }
+
+  public int getDown() {
+    return down;
   }
 
   public boolean isAuto() {
@@ -91,6 +113,10 @@ public class Puppet extends Actor
 
   private void moveToPrevCell()
   {
+    if (cellIndex == 1) {
+      this.resetToStartingPoint();
+    }
+
     cellIndex--;
     int tens = cellIndex / 10;
     int ones = cellIndex - tens * 10;
@@ -124,11 +150,23 @@ public class Puppet extends Actor
       {
         navigationPane.showStatus("Digesting...");
         navigationPane.playSound(GGSound.MMM);
+
+        if (navigationPane.getToggleCheck().isChecked()) {
+          up += 1;
+        } else {
+          down += 1;
+        }
       }
       else
       {
         navigationPane.showStatus("Climbing...");
         navigationPane.playSound(GGSound.BOING);
+
+        if (navigationPane.getToggleCheck().isChecked()) {
+          down += 1;
+        } else {
+          up += 1;
+        }
       }
     }
     setActEnabled(true);
@@ -213,12 +251,24 @@ public class Puppet extends Actor
             if (!isLowestStep) {
               navigationPane.showStatus("Digesting...");
               navigationPane.playSound(GGSound.MMM);
+
+              if (navigationPane.getToggleCheck().isChecked()) {
+                up += 1;
+              } else {
+                down += 1;
+              }
             }
           }
           else
           {
             navigationPane.showStatus("Climbing...");
             navigationPane.playSound(GGSound.BOING);
+
+            if (navigationPane.getToggleCheck().isChecked()) {
+              down += 1;
+            } else {
+              up += 1;
+            }
           }
         }
         else
