@@ -293,20 +293,65 @@ public class NavigationPane extends GameGrid
       showStatus("Done. Click the hand!");
       String result = gp.getPuppet().getPuppetName() + " - pos: " + currentIndex;
       showResult(result);
-      if (nbRolls % numberOfDice == 0) {
+      boolean switched = (nbRolls % numberOfDice == 0);
+      if (switched) {
         gp.switchToNextPuppet();
-        toggleCheck.setEnabled(true);
+        if (!gp.getNextPuppet().isAuto()) {
+          toggleCheck.setEnabled(true);
+        }
       }
       // System.out.println("current puppet - auto: " + gp.getPuppet().getPuppetName() + "  " + gp.getPuppet().isAuto() );
 
-      if (isAuto && !toggleCheck.isEnabled()) {
+      if (isAuto) {
         Monitor.wakeUp();
-      } else if (gp.getPuppet().isAuto() && !toggleCheck.isEnabled()) {
+        if (switched) {
+          autoSwap();
+        }
+      } else if (gp.getPuppet().isAuto() && !switched) {
         Monitor.wakeUp();
       } else {
+        if (switched && gp.getNextPuppet().isAuto()) {
+          autoSwap();
+        }
         handBtn.setEnabled(true);
       }
     }
+  }
+
+  void autoSwap() {
+    Puppet otherPuppet = gp.getNextPuppet();
+    int minCellIndex = numberOfDice + otherPuppet.getCellIndex();
+    int maxCellIndex = 6 * numberOfDice + otherPuppet.getCellIndex();
+    int up = 0;
+    int down = 0;
+    for (int i = minCellIndex; i < maxCellIndex; i++) {
+      Connection currentCon = gp.getConnectionAt(gp.cellToLocation(i));
+      if (currentCon != null) {
+        if (!toggleCheck.isChecked()) {
+          if (currentCon instanceof Snake) {
+            down += 1;
+          } else {
+            up += 1;
+          }
+        } else {
+          if (currentCon instanceof Snake) {
+            up += 1;
+          } else {
+            down += 1;
+          }
+        }
+      }
+    }
+
+    if (up >= down) {
+      if (toggleCheck.isChecked()) {
+        toggleCheck.setChecked(false);
+      } else {
+        toggleCheck.setChecked(true);
+      }
+    }
+    System.out.println("Up: " + up);
+    System.out.println("Down: " + down);
   }
 
   void startMoving(int nb, int pips)

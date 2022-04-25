@@ -74,6 +74,10 @@ public class GamePane extends GameGrid
     return puppets.get(currentPuppetIndex);
   }
 
+  Puppet getNextPuppet() {
+    return puppets.get((currentPuppetIndex + 1) % numberOfPlayers);
+  }
+
   void switchToNextPuppet() {
     currentPuppetIndex = (currentPuppetIndex + 1) % numberOfPlayers;
   }
